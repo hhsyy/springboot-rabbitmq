@@ -10,7 +10,7 @@ import java.io.IOException;
 public class NotSpringbootTestSender {
 
     //获得rabbitmq链接
-    public static Connection getRabbitmqConnection() throws IOException {
+    public static Connection getRabbitmqConnection() throws Exception {
         ConnectionFactory cf = new ConnectionFactory();
 
         //测试时局域网ip失败，ipv4成功，localhost成功
@@ -24,7 +24,7 @@ public class NotSpringbootTestSender {
         return  cf.newConnection();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         //得到连接对象
         Connection connection = getRabbitmqConnection();
         //获取信道
