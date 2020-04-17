@@ -24,20 +24,20 @@ public class RabbitmqConfig {
 
 
 //   Direct方法
-//    @Bean
-//    public DirectExchange TestDirectExchange(){
-//        return new DirectExchange(EXCHANGE_NAME, true,false);
-//    }
-//
-//    @Bean
-//    public Queue TestDirectQueue(){
-//        return new Queue(QUEUE_NAME,true);
-//    }
-//
-//    @Bean
-//    public Binding TestDirectBinding(){
-//        return BindingBuilder.bind(TestDirectQueue()).to(TestDirectExchange()).with(ROUTING_NAME);
-//    }
+    @Bean
+    public DirectExchange TestDirectExchange(){
+        return new DirectExchange(EXCHANGE_NAME, true,false);
+    }
+
+    @Bean
+    public Queue TestDirectQueue(){
+        return new Queue(QUEUE_NAME,true);
+    }
+
+    @Bean
+    public Binding TestDirectBinding(){
+        return BindingBuilder.bind(TestDirectQueue()).to(TestDirectExchange()).with(ROUTING_NAME);
+    }
 
 // //分割线-----------------------
 
@@ -70,38 +70,55 @@ public class RabbitmqConfig {
 //    //分割线-----------------------
 
 //  fanout 无需指定routingkey，指定也不生效
+//    @Bean
+//    public Queue fanoutQueue_one(){
+//        return new Queue(FANOUT_ONE,true);
+//    }
+//
+//    @Bean
+//    public Queue fanoutQueue_two(){
+//        return new Queue(FANOUT_TWO,true);
+//    }
+//
+//    @Bean
+//    public Queue fanoutQueue_three(){
+//        return new Queue(FANOUT_THREE,true);
+//    }
+//
+//    @Bean
+//    public FanoutExchange fanoutExchange(){
+//        return new FanoutExchange(FANOUT_EXCHANGE);
+//    }
+//
+//    @Bean
+//    public Binding fanoutBingding_one(){
+//        return BindingBuilder.bind(fanoutQueue_one()).to(fanoutExchange());
+//    }
+//
+//    @Bean
+//    public Binding fanoutBingding_two(){
+//        return BindingBuilder.bind(fanoutQueue_two()).to(fanoutExchange());
+//    }
+//
+//    @Bean
+//    public Binding fanoutBingding_three(){
+//        return BindingBuilder.bind(fanoutQueue_three()).to(fanoutExchange());
+//    }
+
+//    //分割线-----------------------
+    //测试确认返回配置
     @Bean
-    public Queue fanoutQueue_one(){
-        return new Queue(FANOUT_ONE,true);
+    public DirectExchange testAckExchange(){
+        return new DirectExchange("test_ackexchange",true,false);
     }
 
     @Bean
-    public Queue fanoutQueue_two(){
-        return new Queue(FANOUT_TWO,true);
+    public Queue testAckQueue(){
+        return new Queue("test_ackqueue",true);
     }
 
     @Bean
-    public Queue fanoutQueue_three(){
-        return new Queue(FANOUT_THREE,true);
-    }
-
-    @Bean
-    public FanoutExchange fanoutExchange(){
-        return new FanoutExchange(FANOUT_EXCHANGE);
-    }
-
-    @Bean
-    public Binding fanoutBingding_one(){
-        return BindingBuilder.bind(fanoutQueue_one()).to(fanoutExchange());
-    }
-
-    @Bean
-    public Binding fanoutBingding_two(){
-        return BindingBuilder.bind(fanoutQueue_two()).to(fanoutExchange());
-    }
-
-    @Bean
-    public Binding fanoutBingding_three(){
-        return BindingBuilder.bind(fanoutQueue_three()).to(fanoutExchange());
+    public Binding TestAckBinding(){
+        return BindingBuilder.bind(testAckQueue()).to(testAckExchange()).with("test_ack");
     }
 }

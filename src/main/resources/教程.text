@@ -61,5 +61,29 @@ ack回复
 
 4.编写消费者类（ConsumeController，注解@RabbitListener监听队列，需知队列名称）
 
+四、生产者消息回调
 
+1.情景：
+    ① 找不到交换机（队列为交换机后续操作）
+    ② 找到交换机，找不到队列
+    ③ 找不到交换机，找不到队列（大体与情况①相同）
+    ④ 找到交换机，找到队列
 
+2.在yml中添加配置
+    #确认消息已发送到交换机(Exchange)
+    publisher-confirm-type: correlated
+    #确认消息已发送到队列(Queue)
+    publisher-returns: true
+
+3.编写配置类RabbitConfigSetting
+    重写ConfirmCallback和ReturnCallback方法
+
+五、消费者消息确认
+
+1.模式
+    ① 自动确认（默认）， AcknowledgeMode.NONE
+    ② 按情况确认，...
+    ③ 手动确认
+        basic.ack 肯定
+        basic.nack  多条否定
+        basic.reject 单条否定

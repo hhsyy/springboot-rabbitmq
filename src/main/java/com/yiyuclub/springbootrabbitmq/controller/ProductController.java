@@ -13,23 +13,43 @@ public class ProductController {
     @Autowired
     RabbitTemplate rabbitTemplate;
 
+//  发送测试
     @GetMapping("send")
     public String send(String username){
         HashMap<String,String> hm = new HashMap<String,String>();
         hm.put("username",username);
 
 //      direct方式
-//      rabbitTemplate.convertAndSend("exchange_one","routing_one",hm);
+      rabbitTemplate.convertAndSend("exchange_one","routing_one",hm);
 
 //      topic方式
 //      1:routingKey为topic.one或topic.two可发送到队列(topic.one被发送到topic.one和topic.#队列中，topic.two只能发送到topic.#队列中)
 //      2：routingKey 为test.one不能发送
-//        rabbitTemplate.convertAndSend("topic_exchange","topic.one",hm);
-//        rabbitTemplate.convertAndSend("topic_exchange","topic.two",hm);
+//      rabbitTemplate.convertAndSend("topic_exchange","topic.one",hm);
+//      rabbitTemplate.convertAndSend("topic_exchange","topic.two",hm);
 
 //      fanout方式 无需制定routingkey
+//      rabbitTemplate.convertAndSend("fanout_exchange",null,hm);
+        return "success!";
+    }
 
-        rabbitTemplate.convertAndSend("fanout_exchange",null,hm);
+//  验证消息返回值测试
+    @GetMapping("acksend")
+    public String ackSend(String username){
+        HashMap<String,String> hm = new HashMap<String,String>();
+        hm.put("username",username);
+
+        //情况1 交换机 testexchange不存在 输出ConfirmCallback函数的内容
+        //rabbitTemplate.convertAndSend("testexchange","test_key",hm);
+
+        //情况2 交换机 testexchange存在，队列test_key不存在 输出ConfirmCallback（true）和ReturnCallback函数的内容
+        //rabbitTemplate.convertAndSend("testexchange","test_key",hm);
+
+        //情况3 交换机 testexchange不存在，队列test_key不存在 与1同
+        //rabbitTemplate.convertAndSend("testexchange","test_key",hm);
+
+        //情况4 交换机 testexchange存在，队列test_key存在 显示ConfirmCallback回调函数内容（true）
+        rabbitTemplate.convertAndSend("test_ackexchange","test_ack",hm);
         return "success!";
     }
 }
