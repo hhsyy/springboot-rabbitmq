@@ -55,10 +55,11 @@ ack回复
 
 1.引入spring-boot-starter-amqp
 
-2.编写rabbitmqconcig类（队列，交换机，队列交换机绑定）
+2.编写rabbitmqconcig类（队列，交换机，队列交换机绑定，规定路由键routingkey）
 
-3.编写生产者类（ProductController，使用convertAndSend发送消息）
+3.编写生产者类（ProductController，使用convertAndSend发送消息，根据routingkey发送到相应队列）
 
-4.编写消费者类（ConsumeController，注解@RabbitListener监听队列）
+4.编写消费者类（ConsumeController，注解@RabbitListener监听队列，需知队列名称）
+
 
 
