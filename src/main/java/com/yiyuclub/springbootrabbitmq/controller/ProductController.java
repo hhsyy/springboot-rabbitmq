@@ -15,14 +15,14 @@ public class ProductController {
     @Autowired
     RabbitTemplate rabbitTemplate;
 
-//  发送测试
+    //  发送测试
     @GetMapping("send")
-    public String send(String username){
-        HashMap<String,String> hm = new HashMap<String,String>();
-        hm.put("username",username);
+    public String send(String username) {
+        HashMap<String, String> hm = new HashMap<String, String>();
+        hm.put("username", username);
 
 //      direct方式
-      rabbitTemplate.convertAndSend("exchange_one","routing_one",hm);
+        rabbitTemplate.convertAndSend("exchange_one", "routing_one", hm);
 
 //      topic方式
 //      1:routingKey为topic.one或topic.two可发送到队列(topic.one被发送到topic.one和topic.#队列中，topic.two只能发送到topic.#队列中)
@@ -35,11 +35,11 @@ public class ProductController {
         return "success!";
     }
 
-//  验证消息返回值测试
+    //  验证消息返回值测试
     @GetMapping("acksend")
-    public String ackSend(String username){
-        HashMap<String,String> hm = new HashMap<String,String>();
-        hm.put("username",username);
+    public String ackSend(String username) {
+        HashMap<String, String> hm = new HashMap<String, String>();
+        hm.put("username", username);
         //将CorrelationData放入可在confirm中不为空，并绑定id
         CorrelationData c = new CorrelationData(IdUtil.simpleUUID());
 
@@ -56,7 +56,7 @@ public class ProductController {
         //rabbitTemplate.convertAndSend("test_ackexchange","test_ack",hm);
 
         //消费者确认测试
-        rabbitTemplate.convertAndSend("test_ackexchange","test_ack",hm,c);
+        rabbitTemplate.convertAndSend("test_ackexchange", "test_ack", hm, c);
         return "success!";
     }
 }

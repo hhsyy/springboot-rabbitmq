@@ -1,6 +1,6 @@
 一、安装（http://localhost:15672）
 1.下载安装erlang，并配置环境路径
-2.下载安装rabbitmq，并配置环境
+2.下载安装rabbitmq，并配置环境路径
   开启web界面管理工具，执行rabbitmq-plugins enable rabbitmq_management
   重启rabbitmq
 
@@ -21,15 +21,6 @@ vhost:虚拟主机,一个broker里可以有多个vhost，用作不同用户的�
 Producer:消息生产者,就是投递消息的程序.
 Consumer:消息消费者,就是接受消息的程序.
 Channel:消息通道,在客户端的每个连接里,可建立多个channel.
-
-ack回复
-    工作模式
-    工作队列
-    发布订阅
-    路由
-    通配符
-    Header转发
-    RPC远程调用
 
 二、使用
 
@@ -78,6 +69,7 @@ ack回复
 3.编写配置类RabbitConfigSetting
     实现类重写ConfirmCallback和ReturnCallback
     重写confirm（发送确认，找不到交换机则不会执行returnedMessage方法）和returnedMessage（发送回调）方法
+    CorrelationData可在发送消息函数中添加（绑定id就不为空了）
 
 五、消费者接收消息确认
 
@@ -95,3 +87,27 @@ ack回复
             acknowledge-mode: manual
 
 3.编写监听类onMessage(Message messages, Channel channel)
+
+六、工作模式
+1.简单模式：
+    一个生产者，一个消费者，消息通过FIFO模式排队
+
+2.work模式：
+    一个生产者，多个消费者，消费者接受到的消息是不同的；
+    轮询分发（默认）：会在消费者间循环分配消息
+    公平分发（prefetch: 1）：即执行完当前消息才能执行下一个消息
+
+3.订阅模式
+    一个生产者，一个交换机，多个队列，多个消费者，一个消息经过队列后只能被一个消费者获取，所以每个消费者都配备了队列；
+    生产者生成消息后，将由交换机分发到多个队列，队列再将消息传递给后方的消费者。一个消息可以被分发给多个消息队列，所以可以达到一个消息被多个消费者消费的目的。
+
+4.路由模式
+    一个生产者，一个交换机，多个队列，多个消费者；与订阅模式类似，不同之处在于消息带有类型，不同的消费者可以订阅不同类型的消息；（消息可以自定义类型，例如“update”、“create”、“delete”、“audit.irs.corporate”等）
+    消息在经过交换机时，根据消息的类型进行路由，从而被分发到不同的队列中；
+
+5.topic模式
+    一个生产者，一个交换机，多个队列，多个消费者；与路由模式类似，不同之处在于，其可以通过简单通配符的方式进行消息路由，比如“#”表示所有消息类型，“*”表示单一词匹配；
+    例如：“audit.irs.corporate”消息，“audit.#”可以匹配到，但“audit.*”只能匹配“audit.irs”消息。
+
+6.rpc模式（x）
+

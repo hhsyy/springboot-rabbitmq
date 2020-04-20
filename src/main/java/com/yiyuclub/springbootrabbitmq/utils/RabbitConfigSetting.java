@@ -1,40 +1,38 @@
 package com.yiyuclub.springbootrabbitmq.utils;
 
 
-import org.apache.coyote.OutputBuffer;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.utils.SerializationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 
 @Configuration
-public class RabbitConfigSetting implements RabbitTemplate.ConfirmCallback,RabbitTemplate.ReturnCallback{
+public class RabbitConfigSetting implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnCallback {
 
     @Autowired
     public RabbitTemplate rabbitTemplate;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         //指定 ConfirmCallback
         rabbitTemplate.setConfirmCallback(this);
         //指定 ReturnCallback
         rabbitTemplate.setReturnCallback(this);
     }
+
     // CorrelationData correlationData 相应数据
     // boolean ack  响应答案
     // String cause 原因
     @Override
     public void confirm(CorrelationData correlationData, boolean b, String s) {
-        if(b){
-            System.out.println("消息："+correlationData);
-        }else{
-            System.out.println("错误："+s);
+        if (b) {
+            System.out.println("消息提示：" + correlationData);
+        } else {
+            System.out.println("错误提示：" + s);
         }
     }
 

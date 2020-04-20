@@ -3,19 +3,12 @@ package com.yiyuclub.springbootrabbitmq.controller;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
-public class ConsumeController{
+public class ConsumeController {
 
 //    @RabbitListener(queues = "queue_one")
 //    public void directRev(HashMap hm){
@@ -63,19 +56,40 @@ public class ConsumeController{
 
     //手动消费确认
     @RabbitListener(queues = "test_ackqueue")
-    public void onMessage(Message messages, Channel channel) throws IOException {
+    public void onMessage1(Message messages, Channel channel) throws IOException {
         try {
-            System.out.println("消费确认......");
+            System.out.println("消费确认1......：" + messages.getMessageProperties().getDeliveryTag());
+            Thread.sleep(3000);
             String m = new String(messages.getBody());
             //参数1：DeliveryTag代表了RabbitMQ向该Channel投递的这条消息的唯一标识ID
             //参数2，为true时可以一次性确认小于等于delivery_tag的所有消息
-            channel.basicAck(messages.getMessageProperties().getDeliveryTag(),false);
-        }catch (Exception e){
+            channel.basicAck(messages.getMessageProperties().getDeliveryTag(), false);
+        } catch (Exception e) {
             // deliveryTag对应的消息，第二个参数是否应用于多消息，第三个参数是否requeue
             // 第二个参数是否应用于多消息(与reject的区别)
             // 第三个参数是否requeue(重入队列)
-            System.out.println("接收异常："+e.getStackTrace());
-            channel.basicNack(messages.getMessageProperties().getDeliveryTag(),false,true);
+            System.out.println("接收异常：" + e.getStackTrace());
+            channel.basicNack(messages.getMessageProperties().getDeliveryTag(), false, true);
+
+        }
+    }
+
+    //手动消费确认
+    @RabbitListener(queues = "test_ackqueue")
+    public void onMessage2(Message messages, Channel channel) throws IOException {
+        try {
+            System.out.println("消费确认2......：" + messages.getMessageProperties().getDeliveryTag());
+            Thread.sleep(3000);
+            String m = new String(messages.getBody());
+            //参数1：DeliveryTag代表了RabbitMQ向该Channel投递的这条消息的唯一标识ID
+            //参数2，为true时可以一次性确认小于等于delivery_tag的所有消息
+            channel.basicAck(messages.getMessageProperties().getDeliveryTag(), false);
+        } catch (Exception e) {
+            // deliveryTag对应的消息，第二个参数是否应用于多消息，第三个参数是否requeue
+            // 第二个参数是否应用于多消息(与reject的区别)
+            // 第三个参数是否requeue(重入队列)
+            System.out.println("接收异常：" + e.getStackTrace());
+            channel.basicNack(messages.getMessageProperties().getDeliveryTag(), false, true);
 
         }
     }

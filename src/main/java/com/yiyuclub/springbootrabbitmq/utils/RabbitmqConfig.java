@@ -1,15 +1,18 @@
 package com.yiyuclub.springbootrabbitmq.utils;
 
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitmqConfig {
     //Direct方式
-    public  static String QUEUE_NAME = "queue_one";
-    public  static String EXCHANGE_NAME = "exchange_one";
-    public  static String ROUTING_NAME = "routing_one";
+    public static String QUEUE_NAME = "queue_one";
+    public static String EXCHANGE_NAME = "exchange_one";
+    public static String ROUTING_NAME = "routing_one";
 
     //topic方式
     public static String TOPIC_ONE = "topic.one";
@@ -23,19 +26,19 @@ public class RabbitmqConfig {
     public static String FANOUT_EXCHANGE = "fanout_exchange";
 
 
-//   Direct方法
+    //   Direct方法
     @Bean
-    public DirectExchange TestDirectExchange(){
-        return new DirectExchange(EXCHANGE_NAME, true,false);
+    public DirectExchange TestDirectExchange() {
+        return new DirectExchange(EXCHANGE_NAME, true, false);
     }
 
     @Bean
-    public Queue TestDirectQueue(){
-        return new Queue(QUEUE_NAME,true);
+    public Queue TestDirectQueue() {
+        return new Queue(QUEUE_NAME, true);
     }
 
     @Bean
-    public Binding TestDirectBinding(){
+    public Binding TestDirectBinding() {
         return BindingBuilder.bind(TestDirectQueue()).to(TestDirectExchange()).with(ROUTING_NAME);
     }
 
@@ -105,20 +108,20 @@ public class RabbitmqConfig {
 //        return BindingBuilder.bind(fanoutQueue_three()).to(fanoutExchange());
 //    }
 
-//    //分割线-----------------------
+    //    //分割线-----------------------
     //测试确认返回配置
     @Bean
-    public DirectExchange testAckExchange(){
-        return new DirectExchange("test_ackexchange",true,false);
+    public DirectExchange testAckExchange() {
+        return new DirectExchange("test_ackexchange", true, false);
     }
 
     @Bean
-    public Queue testAckQueue(){
-        return new Queue("test_ackqueue",true);
+    public Queue testAckQueue() {
+        return new Queue("test_ackqueue", true);
     }
 
     @Bean
-    public Binding TestAckBinding(){
+    public Binding TestAckBinding() {
         return BindingBuilder.bind(testAckQueue()).to(testAckExchange()).with("test_ack");
     }
 }
