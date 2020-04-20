@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RabbitListener(queues = "test_ackqueue")
-public class ConsumeController implements ChannelAwareMessageListener {
+public class ConsumeController{
 
 //    @RabbitListener(queues = "queue_one")
 //    public void directRev(HashMap hm){
@@ -60,17 +60,23 @@ public class ConsumeController implements ChannelAwareMessageListener {
 //        System.out.println("test接收中:"+hm.get("username"));
 //    }
 
-    //ChannelAwareMessageListener的重写方法
-    @Override
-    public void onMessage(Message message, Channel channel) throws Exception {
-        long deliveryTag = message.getMessageProperties().getDeliveryTag();
+
+    //手动消费确认
+    @RabbitListener(queues = "test_ackqueue")
+    public void onMessage(Message messages, Channel channel) throws IOException {
         try {
-            String msg = message.toString();
-            System.out.println(msg+"--"+deliveryTag);
-            //true会重新放回队列
-            channel.basicAck(deliveryTag,true);
-        } catch (IOException e) {
-            channel.basicNack(deliveryTag,false,false);
+            System.out.println("消费确认......");
+            String m = new String(messages.getBody());
+            //参数1：DeliveryTag代表了RabbitMQ向该Channel投递的这条消息的唯一标识ID
+            //参数2，为true时可以一次性确认小于等于delivery_tag的所有消息
+            channel.basicAck(messages.getMessageProperties().getDeliveryTag(),false);
+        }catch (Exception e){
+            // deliveryTag对应的消息，第二个参数是否应用于多消息，第三个参数是否requeue
+            // 第二个参数是否应用于多消息(与reject的区别)
+            // 第三个参数是否requeue(重入队列)
+            System.out.println("接收异常："+e.getStackTrace());
+            channel.basicNack(messages.getMessageProperties().getDeliveryTag(),false,true);
+
         }
     }
 }

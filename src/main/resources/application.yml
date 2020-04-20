@@ -11,7 +11,17 @@ spring:
     password: root
     #如不设置,默认使用host
     virtual-host: testrabbitmq
-    #确认消息已发送到交换机(Exchange)
+    #确认消息已发送到交换机(Exchange)，发送确认
     publisher-confirm-type: correlated
-    #确认消息已发送到队列(Queue)
+    #确认消息已发送到队列(Queue) 发送回调
     publisher-returns: true
+    listener:
+      simple:
+        #手动模式
+        acknowledge-mode: manual
+        #初始连接数量
+        concurrency: 5
+        #最大连接数量
+        max-concurrency: 10
+        #限流
+        prefetch: 1

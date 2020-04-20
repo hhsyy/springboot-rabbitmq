@@ -23,17 +23,17 @@ public class NotSpringbootTestRev {
 
     public static void main(String[] args) throws Exception {
         //得到连接对象
-        Connection connection = getRabbitmqConnection();
-        //获取信道
-        Channel channel = connection.createChannel();
-        //创建队列(队列名称，是否持久化，是否私有排外，断开连接后是否自动删除,队列消息删除策略)
+            Connection connection = getRabbitmqConnection();
+            //获取信道
+            Channel channel = connection.createChannel();
+            //创建队列(队列名称，是否持久化，是否私有排外，断开连接后是否自动删除,队列消息删除策略)
         channel.queueDeclare("test",false,false,false,null);
-        //获取消费者
-        DefaultConsumer qc = new DefaultConsumer(channel){
-            @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                System.out.println(new String(body));
-            }
+            //获取消费者
+            DefaultConsumer qc = new DefaultConsumer(channel){
+                @Override
+                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                    System.out.println(new String(body));
+                }
         };
         //监听队列
         channel.basicConsume("test",true,qc);

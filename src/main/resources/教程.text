@@ -1,4 +1,4 @@
-一、安装
+一、安装（http://localhost:15672）
 1.下载安装erlang，并配置环境路径
 2.下载安装rabbitmq，并配置环境
   开启web界面管理工具，执行rabbitmq-plugins enable rabbitmq_management
@@ -61,7 +61,7 @@ ack回复
 
 4.编写消费者类（ConsumeController，注解@RabbitListener监听队列，需知队列名称）
 
-四、生产者消息回调
+四、生产者发送消息回调
 
 1.情景：
     ① 找不到交换机（队列为交换机后续操作）
@@ -71,19 +71,27 @@ ack回复
 
 2.在yml中添加配置
     #确认消息已发送到交换机(Exchange)
-    publisher-confirm-type: correlated
+    publisher-confirm-type: correlated（发送确认）
     #确认消息已发送到队列(Queue)
-    publisher-returns: true
+    publisher-returns: true （发送回调）
 
 3.编写配置类RabbitConfigSetting
-    重写ConfirmCallback和ReturnCallback方法
+    实现类重写ConfirmCallback和ReturnCallback
+    重写confirm（发送确认，找不到交换机则不会执行returnedMessage方法）和returnedMessage（发送回调）方法
 
-五、消费者消息确认
+五、消费者接收消息确认
 
 1.模式
-    ① 自动确认（默认）， AcknowledgeMode.NONE
-    ② 按情况确认，...
+    ① 自动确认（默认）
+    ② none， AcknowledgeMode.NONE
     ③ 手动确认
-        basic.ack 肯定
-        basic.nack  多条否定
-        basic.reject 单条否定
+        basic.ack（basicAck(long,boolean)） 肯定
+        basic.nack（basicNack(long,boolean,boolean)）  多条否定
+        basic.reject（basicReject(long,boolean)） 单条否定
+
+2.在yml添加(如不配置，会出现PRECONDITION_FAILED - unknown delivery tag 1)
+    listener:
+          simple:
+            acknowledge-mode: manual
+
+3.编写监听类onMessage(Message messages, Channel channel)
