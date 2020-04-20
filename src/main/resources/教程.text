@@ -50,7 +50,7 @@ Channel:消息通道,在客户端的每个连接里,可建立多个channel.
 
 3.编写生产者类（ProductController，使用convertAndSend发送消息，根据routingkey发送到相应队列）
 
-4.编写消费者类（ConsumeController，注解@RabbitListener监听队列，需知队列名称）
+4.编写消费者类（ConsumeController，注解@RabbitListener(放在类上需@RabbitHandler放在方法上配合使用)监听队列，需知队列名称）
 
 四、生产者发送消息回调
 
@@ -110,4 +110,9 @@ Channel:消息通道,在客户端的每个连接里,可建立多个channel.
     例如：“audit.irs.corporate”消息，“audit.#”可以匹配到，但“audit.*”只能匹配“audit.irs”消息。
 
 6.rpc模式（x）
+
+七、好处
+    解耦
+    异步
+    削峰
 

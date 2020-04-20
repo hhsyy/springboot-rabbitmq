@@ -19,11 +19,35 @@ spring:
       simple:
         #手动模式
         acknowledge-mode: manual
-        #初始连接数量
+        #最小的消费者数量
         concurrency: 5
-        #最大连接数量
+        #最大的消费者数量
         max-concurrency: 10
         #限流
         #消费者每次从队列获取的消息数量。此属性当不设置时为：轮询分发
-        #置为1：公平分发（即当某个消费者没有消费完成之前不用再分发消息。）
-        prefetch: 1
+        #置为1：公平分发（即当某个消费者没有消费完成之前不用再分发消息），指定处理消息数量
+        prefetch: 3
+
+
+
+# spring.rabbitmq.addresses指定client连接到的server的地址，多个以逗号分隔.
+# spring.rabbitmq.dynamic是否创建AmqpAdmin bean. 默认为: true)
+# spring.rabbitmq.host指定RabbitMQ host.默认为: localhost)
+# spring.rabbitmq.listener.acknowledge-mode指定Acknowledge的模式.
+# spring.rabbitmq.listener.auto-startup是否在启动时就启动mq，默认: true)
+# spring.rabbitmq.listener.concurrency指定最小的消费者数量.
+# spring.rabbitmq.listener.max-concurrency指定最大的消费者数量.
+# spring.rabbitmq.listener.prefetch指定一个请求能处理多少个消息，如果有事务的话，必须大于等于transaction数量.
+# spring.rabbitmq.listener.transaction-size指定一个事务处理的消息数量，最好是小于等于prefetch的数量.
+# spring.rabbitmq.password指定broker的密码.
+# spring.rabbitmq.port指定RabbitMQ 的端口，默认: 5672)
+# spring.rabbitmq.requested-heartbeat指定心跳超时，0为不指定.
+# spring.rabbitmq.ssl.enabled是否开始SSL，默认: false)
+# spring.rabbitmq.ssl.key-store指定持有SSL certificate的key store的路径
+# spring.rabbitmq.ssl.key-store-password指定访问key store的密码.
+# spring.rabbitmq.ssl.trust-store指定持有SSL certificates的Trust store.
+# spring.rabbitmq.ssl.trust-store-password指定访问trust store的密码.
+# spring.rabbitmq.username指定登陆broker的用户名.
+# spring.rabbitmq.virtual-host指定连接到broker的Virtual host.
+# spring.rabbitmq.publisher-confirms=true 开启发送确认
+# spring.rabbitmq.publisher-returns=true 开启发送失败退回

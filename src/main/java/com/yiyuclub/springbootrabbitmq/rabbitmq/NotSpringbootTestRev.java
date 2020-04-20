@@ -1,10 +1,8 @@
 package com.yiyuclub.springbootrabbitmq.rabbitmq;
 
 import com.rabbitmq.client.*;
-import org.springframework.amqp.rabbit.listener.BlockingQueueConsumer;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 public class NotSpringbootTestRev {
     //获得rabbitmq链接
@@ -18,25 +16,26 @@ public class NotSpringbootTestRev {
         cf.setPassword("root");
         cf.setVirtualHost("testrabbitmq");
 
-        return  cf.newConnection();
+        return cf.newConnection();
     }
 
     public static void main(String[] args) throws Exception {
         //得到连接对象
-            Connection connection = getRabbitmqConnection();
-            //获取信道
-            Channel channel = connection.createChannel();
-            //创建队列(队列名称，是否持久化，是否私有排外，断开连接后是否自动删除,队列消息删除策略)
-        channel.queueDeclare("test",false,false,false,null);
-            //获取消费者
-            DefaultConsumer qc = new DefaultConsumer(channel){
-                @Override
-                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                    System.out.println(new String(body));
-                }
+        Connection connection = getRabbitmqConnection();
+        //获取信道
+        Channel channel = connection.createChannel();
+        //限流，每个消费者2个 true为channel级别，FALSE为消费者级别
+        channel.basicQos(0,2,true);
+        //获取消费者,输入监听内容
+        DefaultConsumer qc = new DefaultConsumer(channel) {
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                System.out.println(new String(body));
+                channel.basicAck(envelope.getDeliveryTag(),false);
+            }
         };
-        //监听队列
-        channel.basicConsume("test",true,qc);
+        //监听队列 队列名称 是否自动ack 重写消费者方法
+        channel.basicConsume("queue_not", true, qc);
 
 
     }
